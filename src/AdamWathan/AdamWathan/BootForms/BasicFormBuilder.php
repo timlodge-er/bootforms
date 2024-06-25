@@ -36,7 +36,7 @@ class BasicFormBuilder
         return new GroupWrapper($group);
     }
 
-    public function text( $name,$label, $value = null)
+    public function text( $label, $name, $value = null)
     {
         $control = $this->builder->text($name)->value($value);
 
