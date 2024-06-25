@@ -1,13 +1,12 @@
 <?php namespace AdamWathan\BootForms;
 
 use AdamWathan\Form\ErrorStore\IlluminateErrorStore;
-use AdamWathan\Form\FormBuilder;
+use AdamWathan\BootForms\FormBuilderNew; // Import FormBuilderNew
 use AdamWathan\Form\OldInput\IlluminateOldInputProvider;
 use Illuminate\Support\ServiceProvider;
 
 class BootFormsServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -47,7 +46,7 @@ class BootFormsServiceProvider extends ServiceProvider
     protected function registerFormBuilder()
     {
         $this->app->singleton('adamwathan.form', function ($app) {
-            $formBuilder = new FormBuilder;
+            $formBuilder = new FormBuilderNew(new FormBuilder); // Use FormBuilderNew
             $formBuilder->setErrorStore($app['adamwathan.form.errorstore']);
             $formBuilder->setOldInputProvider($app['adamwathan.form.oldinput']);
             $formBuilder->setToken($app['session.store']->token());
@@ -59,7 +58,7 @@ class BootFormsServiceProvider extends ServiceProvider
     protected function registerBasicFormBuilder()
     {
         $this->app->singleton('bootform.basic', function ($app) {
-            return new BasicFormBuilder($app['adamwathan.form']);
+            return new BasicFormBuilder($app['adamwathan.form']); // This now uses FormBuilderNew
         });
     }
 
