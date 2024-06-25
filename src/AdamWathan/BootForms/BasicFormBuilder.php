@@ -18,6 +18,7 @@ class BasicFormBuilder
 
     protected function formGroup($label, $name, $control)
     {
+        $name = strtolower($name);
         $label = $this->builder->label($label)->addClass('control-label')->forId($name);
         $control->id($name)->addClass('form-control');
 
@@ -42,15 +43,15 @@ class BasicFormBuilder
 
         return $this->formGroup($label, $name, $control);
     }
-    public function number($label, $name, $value = null)
+    public function number($name, $label, $value = null)
     {
         $control = $this->builder->number($name)->value($value);
 
-        return $this->formGroup( $name, $label, $control);
+        return $this->formGroup($label, $name, $control);
     }
 
 
-    public function password($label, $name)
+    public function password($name,$label)
     {
         $control = $this->builder->password($name);
 
@@ -127,7 +128,7 @@ class BasicFormBuilder
         return $this->wrap($checkGroup->addClass('radio'));
     }
 
-    public function textarea($name,$label,$value = null, $attributes = [])
+    public function textarea($name, $label, $value = null, $attributes = [])
     {
         $control = $this->builder->textarea($name)->value($value);
 
@@ -135,7 +136,7 @@ class BasicFormBuilder
             $control->setAttribute($key, $value);
         }
 
-        return $this->formGroup($name, $label, $control);
+        return $this->formGroup($label, $name, $control);
     }
 
 
