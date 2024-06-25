@@ -2,6 +2,8 @@
 
 namespace AdamWathan\BootForms\Elements;
 
+use AdamWathan\Form\Elements\Input;
+
 class Number extends Input
 {
     protected $attributes = [
