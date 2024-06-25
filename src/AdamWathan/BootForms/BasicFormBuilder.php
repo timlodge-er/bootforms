@@ -5,13 +5,13 @@ use AdamWathan\BootForms\Elements\FormGroup;
 use AdamWathan\BootForms\Elements\GroupWrapper;
 use AdamWathan\BootForms\Elements\HelpBlock;
 use AdamWathan\BootForms\Elements\InputGroup;
-use AdamWathan\Form\FormBuilder;
+use AdamWathan\BootForms\FormBuilderNew;
 
 class BasicFormBuilder
 {
     protected $builder;
 
-    public function __construct(FormBuilder $builder)
+    public function __construct(FormBuilderNew $builder)
     {
         $this->builder = $builder;
     }
@@ -41,6 +41,12 @@ class BasicFormBuilder
         $control = $this->builder->text($name)->value($value);
 
         return $this->formGroup($label, $name, $control);
+    }
+    public function number($label, $name, $value = null)
+    {
+        $control = $this->builder->number($name)->value($value);
+
+        return $this->formGroup( $name, $label, $control);
     }
 
     public function password($label, $name)
