@@ -22,8 +22,8 @@
         "satooshi/php-coveralls": "^2.0"
     },
     "autoload": {
-        "psr-0": {
-            "AdamWathan\\BootForms": "src/"
+        "psr-4": {
+            "AdamWathan\\BootForms\\": "src/AdamWathan/BootForms/"
         }
     },
     "minimum-stability": "stable"
