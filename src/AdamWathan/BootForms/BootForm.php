@@ -17,6 +17,14 @@ class BootForm
         $this->builder = $this->basicFormBuilder;
         return $this->builder->open();
     }
+    public function close()
+    {
+        $this->type = null;
+
+        $this->leftColumnClass = $this->rightColumnClass = null;
+
+        return $this->builder->close();
+    }
 
     public function openHorizontal($columnSizes)
     {
