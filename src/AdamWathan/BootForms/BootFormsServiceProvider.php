@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 class BootFormsServiceProvider extends ServiceProvider
 {
+
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -46,7 +47,7 @@ class BootFormsServiceProvider extends ServiceProvider
     protected function registerFormBuilder()
     {
         $this->app->singleton('adamwathan.form', function ($app) {
-            $formBuilder = new FormBuilderNew(new FormBuilder); // Use FormBuilderNew
+            $formBuilder = new FormBuilderNew(new \AdamWathan\Form\FormBuilder); // Use FormBuilderNew with FormBuilder as a dependency
             $formBuilder->setErrorStore($app['adamwathan.form.errorstore']);
             $formBuilder->setOldInputProvider($app['adamwathan.form.oldinput']);
             $formBuilder->setToken($app['session.store']->token());
@@ -58,7 +59,7 @@ class BootFormsServiceProvider extends ServiceProvider
     protected function registerBasicFormBuilder()
     {
         $this->app->singleton('bootform.basic', function ($app) {
-            return new BasicFormBuilder($app['adamwathan.form']); // This now uses FormBuilderNew
+            return new BasicFormBuilder($app['adamwathan.form']);
         });
     }
 
