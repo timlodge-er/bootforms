@@ -69,7 +69,7 @@ class BasicFormBuilder
 
     public function select($name,$label, $options = [])
     {
-        $control = $this->builder->select($name, $label, $options);
+        $control = $this->builder->select($name, $options);
 
         return $this->formGroup($label, $name, $control);
     }
@@ -127,7 +127,7 @@ class BasicFormBuilder
         return $this->wrap($checkGroup->addClass('radio'));
     }
 
-    public function textarea(  $name,$label,$value = null, $attributes = [])
+    public function textarea($name,$label,$value = null, $attributes = [])
     {
         $control = $this->builder->textarea($name)->value($value);
 
