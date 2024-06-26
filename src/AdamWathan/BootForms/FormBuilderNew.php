@@ -3,6 +3,7 @@
 namespace AdamWathan\BootForms;
 
 use AdamWathan\BootForms\Elements\Number;
+use AdamWathan\BootForms\Elements\Hidden;
 use AdamWathan\Form\FormBuilder;
 
 class FormBuilderNew extends FormBuilder
@@ -16,6 +17,16 @@ class FormBuilderNew extends FormBuilder
         }
 
         return $number;
+    }
+    public function hidden($name, $value = null)
+    {
+        $hidden = new Hidden($name);
+
+        if (!is_null($value)) {
+            $hidden->value($value);
+        }
+
+        return $hidden;
     }
 
 }

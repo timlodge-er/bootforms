@@ -185,6 +185,10 @@ class BasicFormBuilder
 
         return $this->formGroup($label, $name, $control);
     }
+    public function hidden($name, $value = null)
+    {
+        return $this->builder->hidden($name)->value($value);
+    }
 
     public function __call($method, $parameters)
     {
