@@ -5,7 +5,10 @@ use AdamWathan\BootForms\Elements\FormGroup;
 use AdamWathan\BootForms\Elements\GroupWrapper;
 use AdamWathan\BootForms\Elements\HelpBlock;
 use AdamWathan\BootForms\Elements\InputGroup;
+use AdamWathan\BootForms\Elements\DivElement;
 use AdamWathan\Form\FormBuilder;
+use AdamWathan\Form\Elements\Element;
+
 
 class BasicFormBuilder
 {
@@ -37,12 +40,13 @@ class BasicFormBuilder
         return new GroupWrapper($group);
     }
 
-    public function text( $name, $label, $value = null)
+    public function text($name, $label, $value = null)
     {
         $control = $this->builder->text($name)->value($value);
 
         return $this->formGroup($label, $name, $control);
     }
+
     public function number($name, $label, $value = null)
     {
         $control = $this->builder->number($name)->value($value);
@@ -50,8 +54,7 @@ class BasicFormBuilder
         return $this->formGroup($label, $name, $control);
     }
 
-
-    public function password($name,$label)
+    public function password($name, $label)
     {
         $control = $this->builder->password($name);
 
@@ -68,32 +71,58 @@ class BasicFormBuilder
         return $this->builder->submit($value)->addClass('btn')->addClass($type);
     }
 
-    public function select($name,$label, $options = [])
+    public function select($name, $label, $options = [])
     {
         $control = $this->builder->select($name, $options);
 
         return $this->formGroup($label, $name, $control);
     }
 
-    public function checkbox($name,$label)
+    public function checkboxes(string $name, ?string $label = null, array $choices = [], array $checkedValues = [], bool $inline = false, array $options = []): string
+    {
+        $elements = '';
+
+        foreach ($choices as $value => $choiceLabel) {
+            $checked = in_array($value, (array) $checkedValues);
+            $checkbox = $this->builder->checkbox($name . '[]', $value)->checked($checked);
+            if ($inline) {
+                $checkbox->inline();
+            }
+            $elements .= '<div class="checkbox' . ($inline ? ' inline' : '') . '">' . (string)$this->wrapCheckbox($choiceLabel, $checkbox) . '</div>';
+        }
+
+        $labelElement = $this->builder->label($label)->addClass('control-label');
+        $controlElement = new DivElement($elements);
+
+        $formGroup = new FormGroup($labelElement, $controlElement);
+
+        return (string) $this->wrap($formGroup);
+    }
+
+    protected function wrapCheckbox($label, Element $control)
+    {
+        return $this->builder->label($label)->after($control)->addClass('checkbox-inline');
+    }
+
+    public function checkbox($name, $label)
     {
         $control = $this->builder->checkbox($name);
 
         return $this->checkGroup($label, $name, $control);
     }
 
-    public function inlineCheckbox( $name, $label)
+    public function inlineCheckbox($name, $label)
     {
         return $this->checkbox($label, $name)->inline();
     }
 
-    protected function checkGroup($name, $label,$control)
+    protected function checkGroup($name, $label, $control)
     {
         $checkGroup = $this->buildCheckGroup($label, $name, $control);
         return $this->wrap($checkGroup->addClass('checkbox'));
     }
 
-    protected function buildCheckGroup( $name,$label, $control)
+    protected function buildCheckGroup($name, $label, $control)
     {
         $label = $this->builder->label($label, $name)->after($control)->addClass('control-label');
 
@@ -106,7 +135,7 @@ class BasicFormBuilder
         return $checkGroup;
     }
 
-    public function radio( $name,$label, $value = null)
+    public function radio($name, $label, $value = null)
     {
         if (is_null($value)) {
             $value = $label;
@@ -117,7 +146,7 @@ class BasicFormBuilder
         return $this->radioGroup($label, $name, $control);
     }
 
-    public function inlineRadio( $name,$label, $value = null)
+    public function inlineRadio($name, $label, $value = null)
     {
         return $this->radio($label, $name, $value)->inline();
     }
@@ -138,7 +167,6 @@ class BasicFormBuilder
 
         return $this->formGroup($label, $name, $control);
     }
-
 
     public function date($name, $label, $value = null)
     {
@@ -161,7 +189,7 @@ class BasicFormBuilder
         return $this->formGroup($label, $name, $control);
     }
 
-    public function file( $name,$label, $value = null)
+    public function file($name, $label, $value = null)
     {
         $control = $this->builder->file($name)->value($value);
         $label = $this->builder->label($label, $name)->addClass('control-label')->forId($name);
