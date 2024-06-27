@@ -71,9 +71,19 @@ class BasicFormBuilder
         return $this->builder->submit($value)->addClass('btn')->addClass($type);
     }
 
-    public function select($name, $label, $options = [])
+    public function select($name, $label, $options = [], $selected = null, $attributes = [])
     {
-        $control = $this->builder->select($name, $options);
+        $control = $this->builder->select($name, $options, $selected);
+
+        // Loop through the attributes to find 'class'
+        foreach ($attributes as $key => $value) {
+            if ($key === 'class') {
+                $control->addClass($value);
+            } else {
+                $control->setAttribute($key, $value);
+            }
+        }
+
 
         return $this->formGroup($label, $name, $control);
     }
