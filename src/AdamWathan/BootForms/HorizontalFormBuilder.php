@@ -78,9 +78,9 @@ class HorizontalFormBuilder extends BasicFormBuilder
         return new OffsetFormGroup($button, $this->columnSizes);
     }
 
-    public function checkbox($label, $name)
+    public function checkbox($label, $name, $checked = false)
     {
-        $control = $this->builder->checkbox($name);
+        $control = $this->builder->checkbox($name)->checked($checked);
         $checkGroup = $this->checkGroup($label, $name, $control)->addClass('checkbox');
 
         return new OffsetFormGroup($this->wrap($checkGroup), $this->columnSizes);

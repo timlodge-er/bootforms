@@ -66,9 +66,29 @@ class BasicFormBuilder
         return $this->builder->button($value, $name)->addClass('btn')->addClass($type);
     }
 
-    public function submit($value = "Submit", $type = "btn-default")
+
+    public function submit($value = "Submit", $attributes = [])
     {
-        return $this->builder->submit($value)->addClass('btn')->addClass($type);
+        if(!is_array($attributes)){
+            return $this->builder->submit($value)->addClass('btn')->addClass($attributes);
+        }
+        $control = $this->builder->submit($value);
+
+        // Ensure 'btn' class is always added
+        $control->addClass('btn');
+
+        // Loop through the attributes to set them
+        foreach ($attributes as $key => $attrValue) {
+            if ($key === 'class') {
+                // Add the class to the control
+                $control->addClass($attrValue);
+            } else {
+                // Set other attributes using the public 'attribute' method
+                $control->attribute($key, $attrValue);
+            }
+        }
+
+        return $control;
     }
 
     public function select($name, $label, $options = [], $selected = null, $attributes = [])
@@ -114,12 +134,13 @@ class BasicFormBuilder
         return $this->builder->label($label)->after($control)->addClass('checkbox-inline');
     }
 
-    public function checkbox($name, $label)
+    public function checkbox($name, $label, $checked = false)
     {
-        $control = $this->builder->checkbox($name);
+        $control = $this->builder->checkbox($name)->checked($checked);
 
         return $this->checkGroup($label, $name, $control);
     }
+
 
     public function inlineCheckbox($name, $label)
     {
@@ -172,7 +193,11 @@ class BasicFormBuilder
         $control = $this->builder->textarea($name)->value($value);
 
         foreach ($attributes as $key => $value) {
-            $control->setAttribute($key, $value);
+            if ($key === 'class') {
+                $control->addClass($value);
+            } else {
+                $control->setAttribute($key, $value);
+            }
         }
 
         return $this->formGroup($label, $name, $control);
