@@ -5,7 +5,10 @@ use AdamWathan\BootForms\Elements\FormGroup;
 use AdamWathan\BootForms\Elements\GroupWrapper;
 use AdamWathan\BootForms\Elements\HelpBlock;
 use AdamWathan\BootForms\Elements\InputGroup;
+use AdamWathan\BootForms\Elements\DivElement;
 use AdamWathan\Form\FormBuilder;
+use AdamWathan\Form\Elements\Element;
+
 
 class BasicFormBuilder
 {
@@ -18,6 +21,7 @@ class BasicFormBuilder
 
     protected function formGroup($label, $name, $control)
     {
+        $name = strtolower($name);
         $label = $this->builder->label($label)->addClass('control-label')->forId($name);
         $control->id($name)->addClass('form-control');
 
@@ -36,21 +40,21 @@ class BasicFormBuilder
         return new GroupWrapper($group);
     }
 
-    public function text( $label, $name, $value = null)
+    public function text($name, $label, $value = null)
     {
         $control = $this->builder->text($name)->value($value);
 
         return $this->formGroup($label, $name, $control);
     }
-    public function number($label, $name, $value = null)
+
+    public function number($name, $label, $value = null)
     {
         $control = $this->builder->number($name)->value($value);
 
-        return $this->formGroup( $name, $label, $control);
+        return $this->formGroup($label, $name, $control);
     }
 
-
-    public function password($label, $name)
+    public function password($name, $label)
     {
         $control = $this->builder->password($name);
 
@@ -62,37 +66,94 @@ class BasicFormBuilder
         return $this->builder->button($value, $name)->addClass('btn')->addClass($type);
     }
 
-    public function submit($value = "Submit", $type = "btn-default")
+
+    public function submit($value = "Submit", $attributes = [])
     {
-        return $this->builder->submit($value)->addClass('btn')->addClass($type);
+        if(!is_array($attributes)){
+            return $this->builder->submit($value)->addClass('btn')->addClass($attributes);
+        }
+        $control = $this->builder->submit($value);
+
+        // Ensure 'btn' class is always added
+        $control->addClass('btn');
+
+        // Loop through the attributes to set them
+        foreach ($attributes as $key => $attrValue) {
+            if ($key === 'class') {
+                // Add the class to the control
+                $control->addClass($attrValue);
+            } else {
+                // Set other attributes using the public 'attribute' method
+                $control->attribute($key, $attrValue);
+            }
+        }
+
+        return $control;
     }
 
-    public function select($name,$label, $options = [])
+    public function select($name, $label, $options = [], $selected = null, $attributes = [])
     {
-        $control = $this->builder->select($name, $label, $options);
+        $control = $this->builder->select($name, $options, $selected);
+
+        // Loop through the attributes to find 'class'
+        foreach ($attributes as $key => $value) {
+            if ($key === 'class') {
+                $control->addClass($value);
+            } else {
+                $control->setAttribute($key, $value);
+            }
+        }
+
 
         return $this->formGroup($label, $name, $control);
     }
 
-    public function checkbox($name,$label)
+    public function checkboxes(string $name, ?string $label = null, array $choices = [], array $checkedValues = [], bool $inline = false, array $options = []): string
     {
-        $control = $this->builder->checkbox($name);
+        $elements = '';
+
+        foreach ($choices as $value => $choiceLabel) {
+            $checked = in_array($value, (array) $checkedValues);
+            $checkbox = $this->builder->checkbox($name . '[]', $value)->checked($checked);
+            if ($inline) {
+                $checkbox->inline();
+            }
+            $elements .= '<div class="checkbox' . ($inline ? ' inline' : '') . '">' . (string)$this->wrapCheckbox($choiceLabel, $checkbox) . '</div>';
+        }
+
+        $labelElement = $this->builder->label($label)->addClass('control-label');
+        $controlElement = new DivElement($elements);
+
+        $formGroup = new FormGroup($labelElement, $controlElement);
+
+        return (string) $this->wrap($formGroup);
+    }
+
+    protected function wrapCheckbox($label, Element $control)
+    {
+        return $this->builder->label($label)->after($control)->addClass('checkbox-inline');
+    }
+
+    public function checkbox($name, $label, $checked = false)
+    {
+        $control = $this->builder->checkbox($name)->checked($checked);
 
         return $this->checkGroup($label, $name, $control);
     }
 
-    public function inlineCheckbox( $name, $label)
+
+    public function inlineCheckbox($name, $label)
     {
         return $this->checkbox($label, $name)->inline();
     }
 
-    protected function checkGroup($name, $label,$control)
+    protected function checkGroup($name, $label, $control)
     {
         $checkGroup = $this->buildCheckGroup($label, $name, $control);
         return $this->wrap($checkGroup->addClass('checkbox'));
     }
 
-    protected function buildCheckGroup( $name,$label, $control)
+    protected function buildCheckGroup($name, $label, $control)
     {
         $label = $this->builder->label($label, $name)->after($control)->addClass('control-label');
 
@@ -105,7 +166,7 @@ class BasicFormBuilder
         return $checkGroup;
     }
 
-    public function radio( $name,$label, $value = null)
+    public function radio($name, $label, $value = null)
     {
         if (is_null($value)) {
             $value = $label;
@@ -116,7 +177,7 @@ class BasicFormBuilder
         return $this->radioGroup($label, $name, $control);
     }
 
-    public function inlineRadio( $name,$label, $value = null)
+    public function inlineRadio($name, $label, $value = null)
     {
         return $this->radio($label, $name, $value)->inline();
     }
@@ -127,19 +188,22 @@ class BasicFormBuilder
         return $this->wrap($checkGroup->addClass('radio'));
     }
 
-    public function textarea( $label, $name,$value = null, $attributes = [])
+    public function textarea($name, $label, $value = null, $attributes = [])
     {
         $control = $this->builder->textarea($name)->value($value);
 
         foreach ($attributes as $key => $value) {
-            $control->setAttribute($key, $value);
+            if ($key === 'class') {
+                $control->addClass($value);
+            } else {
+                $control->setAttribute($key, $value);
+            }
         }
 
-        return $this->formGroup($name, $label, $control);
+        return $this->formGroup($label, $name, $control);
     }
 
-
-    public function date($label, $name, $value = null)
+    public function date($name, $label, $value = null)
     {
         $control = $this->builder->date($name)->value($value);
 
@@ -153,14 +217,14 @@ class BasicFormBuilder
         return $this->formGroup($label, $name, $control);
     }
 
-    public function email($label, $name, $value = null)
+    public function email($name, $label, $value = null)
     {
         $control = $this->builder->email($name)->value($value);
 
         return $this->formGroup($label, $name, $control);
     }
 
-    public function file( $name,$label, $value = null)
+    public function file($name, $label, $value = null)
     {
         $control = $this->builder->file($name)->value($value);
         $label = $this->builder->label($label, $name)->addClass('control-label')->forId($name);
@@ -189,6 +253,32 @@ class BasicFormBuilder
     {
         return $this->builder->hidden($name)->value($value);
     }
+    public function radios(string $name, ?string $label = null, array $choices = [], ?string $checkedValue = null, bool $inline = false, array $options = []): string
+    {
+        $elements = '';
+
+        foreach ($choices as $value => $choiceLabel) {
+            $checked = $value === $checkedValue;
+            $radio = $this->builder->radio($name, $value)->checked($checked);
+            if ($inline) {
+                $radio->inline();
+            }
+            $elements .= '<div class="radio' . ($inline ? ' inline' : '') . '">' . (string)$this->wrapRadio($choiceLabel, $radio) . '</div>';
+        }
+
+        $labelElement = $this->builder->label($label)->addClass('control-label');
+        $controlElement = new DivElement($elements);
+
+        $formGroup = new FormGroup($labelElement, $controlElement);
+
+        return (string) $this->wrap($formGroup);
+    }
+
+    protected function wrapRadio($label, Element $control)
+    {
+        return $this->builder->label($label)->after($control)->addClass('radio-inline');
+    }
+
 
     public function __call($method, $parameters)
     {
