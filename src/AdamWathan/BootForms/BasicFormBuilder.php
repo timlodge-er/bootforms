@@ -253,6 +253,31 @@ class BasicFormBuilder
     {
         return $this->builder->hidden($name)->value($value);
     }
+    public function radios(string $name, ?string $label = null, array $choices = [], ?string $checkedValue = null, bool $inline = false, array $options = []): string
+    {
+        $elements = '';
+
+        foreach ($choices as $value => $choiceLabel) {
+            $checked = $value === $checkedValue;
+            $radio = $this->builder->radio($name, $value)->checked($checked);
+            if ($inline) {
+                $radio->inline();
+            }
+            $elements .= '<div class="radio' . ($inline ? ' inline' : '') . '">' . (string)$this->wrapRadio($choiceLabel, $radio) . '</div>';
+        }
+
+        $labelElement = $this->builder->label($label)->addClass('control-label');
+        $controlElement = new DivElement($elements);
+
+        $formGroup = new FormGroup($labelElement, $controlElement);
+
+        return (string) $this->wrap($formGroup);
+    }
+
+    protected function wrapRadio($label, Element $control)
+    {
+        return $this->builder->label($label)->after($control)->addClass('radio-inline');
+    }
 
 
     public function __call($method, $parameters)
