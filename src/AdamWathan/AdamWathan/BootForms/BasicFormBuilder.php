@@ -113,8 +113,13 @@ class BasicFormBuilder
         $elements = '';
 
         foreach ($choices as $value => $choiceLabel) {
-            $checked = in_array($value, (array) $checkedValues);
-            $checkbox = $this->builder->checkbox($name . '[]', $value)->checked($checked);
+            // Ensure the checkbox is checked based on $checkedValues
+            $checked = in_array($value, $checkedValues);
+
+            $checkbox = $this->builder->checkbox($name . '[]', $value);
+            if($checked){
+                $checkbox->checked($checked);
+            }
             if ($inline) {
                 $checkbox->inline();
             }
@@ -134,22 +139,17 @@ class BasicFormBuilder
         return $this->builder->label($label)->after($control)->addClass('checkbox-inline');
     }
 
-    public function checkbox($name, $label, $checked = false)
+    public function checkbox($name, $value, $checked = false)
     {
-        $control = $this->builder->checkbox($name)->checked($checked);
+        // Ensure the value is set correctly and the checked status is applied
+        $control = $this->builder->checkbox($name)->value($value)->checked($checked);
 
-        return $this->checkGroup($label, $name, $control);
-    }
-
-
-    public function inlineCheckbox($name, $label)
-    {
-        return $this->checkbox($label, $name)->inline();
+        return $this->wrapCheckbox($name, $control);
     }
 
     protected function checkGroup($name, $label, $control)
     {
-        $checkGroup = $this->buildCheckGroup($label, $name, $control);
+        $checkGroup = $this->buildCheckGroup($name, $label, $control);
         return $this->wrap($checkGroup->addClass('checkbox'));
     }
 
