@@ -141,9 +141,11 @@ class BasicFormBuilder
 
     public function checkbox($name, $value, $checked = false)
     {
-        // Ensure the value is set correctly and the checked status is applied
-        $control = $this->builder->checkbox($name)->value($value)->checked($checked);
-
+        $control = $this->builder->checkbox($name)->value($value);
+        if($checked){
+            $control->checked($checked);
+        }
+        
         return $this->wrapCheckbox($name, $control);
     }
 
