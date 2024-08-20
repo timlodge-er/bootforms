@@ -134,19 +134,23 @@ class BasicFormBuilder
         return (string) $this->wrap($formGroup);
     }
 
-    protected function wrapCheckbox($label, Element $control)
+    protected function wrapCheckbox($name, $label, $control)
     {
-        return $this->builder->label($label)->after($control)->addClass('checkbox-inline');
+        $labelElement = $label ? "<label for=\"{$name}\">{$label}</label>" : '';
+        return "<div class=\"checkbox\">{$control->render()} {$labelElement}</div>";
     }
 
-    public function checkbox($name, $value, $checked = false)
+    public function checkbox($name, $label = null, $value = 1, $checked = null)
     {
         $control = $this->builder->checkbox($name)->value($value);
-        if($checked){
-            $control->checked($checked);
+
+        // Set checked state based on model value
+        if ($checked) {
+            $control->check();
         }
 
-        return $this->wrapCheckbox($name, $control);
+        // Wrap with label if provided
+        return $this->wrapCheckbox($name, $label, $control);
     }
 
     protected function checkGroup($name, $label, $control)

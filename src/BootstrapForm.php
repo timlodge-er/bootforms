@@ -872,6 +872,7 @@ class BootstrapForm
             $options['id'] = $name;
         }
 
+        
         return $options;
     }
 

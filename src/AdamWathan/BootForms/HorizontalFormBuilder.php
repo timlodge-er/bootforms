@@ -78,11 +78,20 @@ class HorizontalFormBuilder extends BasicFormBuilder
         return new OffsetFormGroup($button, $this->columnSizes);
     }
 
-    public function checkbox($label, $name, $checked = false)
+    public function checkbox($name, $label = null, $value = 1, $checked = null)
     {
-        $control = $this->builder->checkbox($name)->checked($checked);
+        // Create the checkbox element
+        $control = $this->builder->checkbox($name)->value($value);
+
+        // Set the checkbox as checked if $checked is true
+        if ($checked) {
+            $control->checked();
+        }
+
+        // Create the checkbox form group
         $checkGroup = $this->checkGroup($label, $name, $control)->addClass('checkbox');
 
+        // Return the form group with proper horizontal column sizes
         return new OffsetFormGroup($this->wrap($checkGroup), $this->columnSizes);
     }
 
