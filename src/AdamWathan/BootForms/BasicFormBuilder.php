@@ -1,13 +1,12 @@
 <?php namespace AdamWathan\BootForms;
 
 use AdamWathan\BootForms\Elements\CheckGroup;
+use AdamWathan\BootForms\Elements\DivElement;
 use AdamWathan\BootForms\Elements\FormGroup;
 use AdamWathan\BootForms\Elements\GroupWrapper;
-use AdamWathan\BootForms\Elements\HelpBlock;
 use AdamWathan\BootForms\Elements\InputGroup;
-use AdamWathan\BootForms\Elements\DivElement;
-use AdamWathan\Form\FormBuilder;
 use AdamWathan\Form\Elements\Element;
+use AdamWathan\Form\FormBuilder;
 
 
 class BasicFormBuilder

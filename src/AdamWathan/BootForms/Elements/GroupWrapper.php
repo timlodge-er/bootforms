@@ -1,7 +1,5 @@
 <?php namespace AdamWathan\BootForms\Elements;
 
-use AdamWathan\Form\Elements\Label;
-
 class GroupWrapper
 {
     protected $formGroup;
