@@ -3,7 +3,7 @@
 namespace AdamWathan\BootForms\Elements;
 
 use AdamWathan\Form\Elements\FormControl;
-use function AdamWathan\Form\Elements\dump;
+
 
 class Select extends FormControl
 {
@@ -13,7 +13,6 @@ class Select extends FormControl
 
     public function __construct($name, $options = [])
     {
-        dump('called');
         $this->setName($name);
         $this->setOptions($options);
     }
@@ -107,7 +106,6 @@ class Select extends FormControl
 
     protected function isSelected($value)
     {
-        dump(in_array($value, (array) $this->selected));
         return in_array($value, (array) $this->selected);
     }
 
