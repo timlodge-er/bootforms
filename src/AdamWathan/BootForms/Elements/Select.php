@@ -17,32 +17,11 @@ class Select extends FormControl
         $this->setOptions($options);
     }
 
-    public function select($name, $label, $options = [], $selected = null, $attributes = [])
+    public function select($option)
     {
-        $control = $this->builder->select($name, $options, $selected);
+        $this->selected = $option;
 
-        // Loop through the attributes to find 'class'
-        $classFound = false;
-        foreach ($attributes as $key => $value) {
-            if ($key === 'class') {
-                // Append the 'category-select2' class
-                $attributes[$key] .= ' category-select2';
-                $classFound = true;
-                break;
-            }
-        }
-
-        // If 'class' attribute is not found, add it
-        if (!$classFound) {
-            $attributes['class'] = 'category-select2';
-        }
-
-        // Add all attributes to the control
-        foreach ($attributes as $key => $value) {
-            $control->setAttribute($key, $value);
-        }
-
-        return $this->formGroup($label, $name, $control);
+        return $this;
     }
 
     protected function setOptions($options)
