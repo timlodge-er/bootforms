@@ -143,12 +143,20 @@ class BasicFormBuilder
     {
         $control = $this->builder->checkbox($name)->value($value);
 
-        // Set checked state based on model value
-        if ($checked) {
+        $oldValue = old($name);
+
+        if (!is_null($oldValue)) {
+            if ($oldValue) {
+                $control->check();
+            } else {
+                $control->uncheck();
+            }
+        } elseif ($checked) {
+            $control->check();
+        } elseif($value === 1){
             $control->check();
         }
 
-        // Wrap with label if provided
         return $this->wrapCheckbox($name, $label, $control);
     }
 

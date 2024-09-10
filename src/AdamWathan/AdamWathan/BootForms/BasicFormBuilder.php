@@ -138,14 +138,25 @@ class BasicFormBuilder
         return $this->builder->label($label)->after($control)->addClass('checkbox-inline');
     }
 
-    public function checkbox($name, $value, $checked = false)
+    public function checkbox($name, $label = null, $value = 1, $checked = null)
     {
         $control = $this->builder->checkbox($name)->value($value);
-        if($checked){
-            $control->checked($checked);
+
+        $oldValue = old($name);
+
+        if (!is_null($oldValue)) {
+            if ($oldValue) {
+                $control->check();
+            } else {
+                $control->uncheck();
+            }
+        } elseif ($checked) {
+            $control->check();
+        } elseif($value === 1){
+            $control->check();
         }
-        
-        return $this->wrapCheckbox($name, $control);
+
+        return $this->wrapCheckbox($name, $label, $control);
     }
 
     protected function checkGroup($name, $label, $control)
