@@ -187,10 +187,6 @@ class BasicFormBuilder
 
         // Fetch the old input value if available, or use the explicitly provided checked value.
         $oldValue = old($name);
-        dump($oldValue);
-        dump($value);
-        dump($checkedValue);
-
         // Determine if the radio should be checked.
         $isChecked = $value === $oldValue || $value === $checkedValue;
 
