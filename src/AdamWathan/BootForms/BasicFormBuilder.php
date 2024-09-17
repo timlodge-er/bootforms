@@ -115,14 +115,14 @@ class BasicFormBuilder
             // Ensure the checkbox is checked based on $checkedValues
             $checked = in_array($value, $checkedValues);
 
-            $checkbox = $this->builder->checkbox($name . '[]', $value);
+            $checkbox = $this->builder->checkbox($name, $value);
             if($checked){
                 $checkbox->checked($checked);
             }
             if ($inline) {
                 $checkbox->inline();
             }
-            $elements .= '<div class="checkbox' . ($inline ? ' inline' : '') . '">' . (string)$this->wrapCheckbox($choiceLabel, $checkbox) . '</div>';
+            $elements .= '<div class="checkbox' . ($inline ? ' inline' : '') . '">' . (string)$this->wrapCheckbox($name, $choiceLabel, $checkbox) . '</div>';
         }
 
         $labelElement = $this->builder->label($label)->addClass('control-label');
@@ -187,6 +187,9 @@ class BasicFormBuilder
 
         // Fetch the old input value if available, or use the explicitly provided checked value.
         $oldValue = old($name);
+        dump($oldValue);
+        dump($value);
+        dump($checkedValue);
 
         // Determine if the radio should be checked.
         $isChecked = $value === $oldValue || $value === $checkedValue;
@@ -282,8 +285,11 @@ class BasicFormBuilder
         $elements = '';
 
         foreach ($choices as $value => $choiceLabel) {
-            $checked = $value === $checkedValue;
-            $radio = $this->builder->radio($name, $value)->checked($checked);
+            $checked = $value == $checkedValue;
+            $radio = $this->builder->radio($name, $value);
+            if($checked){
+                $radio->checked($checked);
+            }
             if ($inline) {
                 $radio->inline();
             }
