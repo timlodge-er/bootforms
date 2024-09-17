@@ -108,7 +108,7 @@ class HorizontalFormBuilder extends BasicFormBuilder
         return $checkGroup;
     }
 
-    public function radio($label, $name, $value = null)
+    public function radio($label, $name, $value = null, $checked = null)
     {
         if (is_null($value)) {
             $value = $label;

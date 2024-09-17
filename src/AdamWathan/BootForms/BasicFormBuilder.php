@@ -179,13 +179,24 @@ class BasicFormBuilder
         return $checkGroup;
     }
 
-    public function radio($name, $label, $value = null)
+    public function radio($name, $label, $value = null, $checkedValue = null)
     {
         if (is_null($value)) {
             $value = $label;
         }
 
+        // Fetch the old input value if available, or use the explicitly provided checked value.
+        $oldValue = old($name);
+
+        // Determine if the radio should be checked.
+        $isChecked = $value === $oldValue || $value === $checkedValue;
+
+        // Create the radio input and set it as checked if necessary.
         $control = $this->builder->radio($name, $value);
+
+        if ($isChecked) {
+            $control->check();
+        }
 
         return $this->radioGroup($label, $name, $control);
     }
